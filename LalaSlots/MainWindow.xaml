@@ -1,0 +1,45 @@
+﻿<Window x:Class="LalaSlots.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LalaSlots"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="100*" />
+        </Grid.ColumnDefinitions>
+        <Button x:Name="button_LalaOne_Select" Content="Select Process" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Click="button_LalaOne_Select_Click" Padding="3,1" Grid.Column="1"/>
+        <Label x:Name="label_LalaOne_Name" Content="Lala One" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label x:Name="label_LalaTwo_Name" Content="Lala Two" Grid.Column="2" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label x:Name="label_LalaThree_Name" Content="Lala Three" Grid.Column="3" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Button x:Name="button_StartTheGame" Content="Start the Game" Grid.Column="4" HorizontalAlignment="Center" Margin="0,0,0,10" Grid.Row="1" VerticalAlignment="Bottom" Padding="3,1" Click="button_StartTheGame_Click"/>
+        <Label x:Name="label_LalaOne_FinalNumber" Content="4" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,10" Grid.Row="1" VerticalAlignment="Bottom" FontSize="48" FontWeight="Bold"/>
+        <Label x:Name="label_LalaTwo_FinalNumber" Content="2" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,0,10" Grid.Row="1" VerticalAlignment="Bottom" FontSize="48" FontWeight="Bold"/>
+        <Label x:Name="label_LalaThree_FinalNumber" Content="0" Grid.Column="3" HorizontalAlignment="Center" Margin="0,0,0,10" Grid.Row="1" VerticalAlignment="Bottom" FontSize="48" FontWeight="Bold"/>
+        <Button x:Name="button_LalaTwo_Select" Content="Select Process" Grid.Column="2" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Padding="3,1" Click="button_LalaTwo_Select_Click"/>
+        <Button x:Name="button_LalaThree_Select" Content="Select Process" Grid.Column="3" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Padding="3,1" Click="button_LalaThree_Select_Click"/>
+        <Button x:Name="button_ResetAll" Content="Reset State" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Padding="3,1" Click="button_ResetAll_Click"/>
+        <ComboBox
+            x:Name="cbox_LalaAll_SelectEmote" HorizontalAlignment="Center" Margin="0,40,0,0" Grid.Row="1" VerticalAlignment="Top" Padding="9,3,5,3" Grid.Column="0" MinWidth="83"
+            ItemsSource="{Binding Path=KeybindActionEnumsWithCaptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=LalaAllAction, Mode=TwoWay}"/>
+        <ComboBox
+            x:Name="cbox_LalaOne_SelectEmote" HorizontalAlignment="Center" Margin="0,40,0,0" Grid.Row="1" VerticalAlignment="Top" Padding="9,3,5,3" Grid.Column="1" MinWidth="83"
+            ItemsSource="{Binding Path=KeybindActionEnumsWithCaptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=LalaOneAction, Mode=TwoWay}"/>
+        <ComboBox
+            x:Name="cbox_LalaTwo_SelectEmote" HorizontalAlignment="Center" Margin="0,40,0,0" Grid.Row="1" VerticalAlignment="Top" Padding="9,3,5,3" Grid.Column="2" MinWidth="83"
+            ItemsSource="{Binding Path=KeybindActionEnumsWithCaptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=LalaTwoAction, Mode=TwoWay}"/>
+        <ComboBox
+            x:Name="cbox_LalaThree_SelectEmote" HorizontalAlignment="Center" Margin="0,40,0,0" Grid.Row="1" VerticalAlignment="Top" Padding="9,3,5,3" Grid.Column="3" MinWidth="83"
+            ItemsSource="{Binding Path=KeybindActionEnumsWithCaptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=LalaThreeAction, Mode=TwoWay}"/>
+    </Grid>
+</Window>
