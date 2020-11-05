@@ -33,56 +33,56 @@
             MacroSayBlue  = 24,
         }
 
-        public static (Keys, Keys) GetKeyFromKeybindAction(KeybindAction action)
+        public static Keys GetKeyFromKeybindAction(KeybindAction action)
         {
             switch (action)
             {
                 case KeybindAction.EquipOutfit1:
-                    return (Keys.D1, Keys.ShiftKey);
+                    return Keys.D1 | Keys.Shift;
                 case KeybindAction.EquipOutfit2:
-                    return (Keys.D2, Keys.ShiftKey);
+                    return Keys.D2 | Keys.Shift;
                 case KeybindAction.EquipOutfit3:
-                    return (Keys.D3, Keys.ShiftKey);
+                    return Keys.D3 | Keys.Shift;
                 case KeybindAction.EquipOutfit4:
-                    return (Keys.D4, Keys.ShiftKey);
+                    return Keys.D4 | Keys.Shift;
                 case KeybindAction.EmoteCheer:
-                    return (Keys.D5, Keys.ShiftKey);
+                    return Keys.D5 | Keys.Shift;
                 case KeybindAction.EmoteSurp:
-                    return (Keys.D6, Keys.ShiftKey);
+                    return Keys.D6 | Keys.Shift;
                 case KeybindAction.EmoteThumbs:
-                    return (Keys.D7, Keys.ShiftKey);
+                    return Keys.D7 | Keys.Shift;
                 case KeybindAction.EmoteNo:
-                    return (Keys.D8, Keys.ShiftKey);
+                    return Keys.D8 | Keys.Shift;
                 case KeybindAction.EmoteFume:
-                    return (Keys.D9, Keys.ShiftKey);
+                    return Keys.D9 | Keys.Shift;
                 case KeybindAction.EmoteFPalm:
-                    return (Keys.D0, Keys.ShiftKey);
+                    return Keys.D0 | Keys.Shift;
                 case KeybindAction.EmoteFlex:
-                    return (Keys.OemMinus, Keys.ShiftKey);
+                    return Keys.OemMinus | Keys.Shift;
                 case KeybindAction.EmoteAirQ:
-                    return (Keys.Oemplus, Keys.ShiftKey);
+                    return Keys.Oemplus | Keys.Shift;
                 case KeybindAction.EmoteDance:
-                    return (Keys.D1, Keys.Menu);
+                    return Keys.D1 | Keys.Alt;
                 case KeybindAction.EmoteSit:
-                    return (Keys.D2, Keys.Menu);
+                    return Keys.D2 | Keys.Alt;
                 case KeybindAction.EmotePray:
-                    return (Keys.D3, Keys.Menu);
+                    return Keys.D3 | Keys.Alt;
                 case KeybindAction.EmoteBeckon:
-                    return (Keys.D4, Keys.Menu);
+                    return Keys.D4 | Keys.Alt;
                 case KeybindAction.EmoteThink:
-                    return (Keys.D5, Keys.Menu);
+                    return Keys.D5 | Keys.Alt;
                 case KeybindAction.EmoteDoze:
-                    return (Keys.D6, Keys.Menu);
+                    return Keys.D6 | Keys.Alt;
 
                 case KeybindAction.MacroSayRed:
-                    return (Keys.D0, Keys.Menu);
+                    return Keys.D0 | Keys.Alt;
                 case KeybindAction.MacroSayGreen:
-                    return (Keys.OemMinus, Keys.Menu);
+                    return Keys.OemMinus | Keys.Alt;
                 case KeybindAction.MacroSayBlue:
-                    return (Keys.Oemplus, Keys.Menu);
+                    return Keys.Oemplus | Keys.Alt;
             }
 
-            return (Keys.None, Keys.None);
+            return Keys.None;
         }
     }
 }

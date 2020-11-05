@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Threading;
 
@@ -21,7 +22,7 @@
             TheGame = new GameLogic();
             TheGame.OnUpdate += delegate (object o, LalaUpdate update)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { UpdateSystem(update); }));
+                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action(() => { UpdateSystem(update); }));
             };
 
             FFXIVMemory.InitializeMemory();
@@ -34,6 +35,10 @@
                 this.label_LalaOne_FinalNumber.Content   = update.Data.LalaOneFinalNumber;
                 this.label_LalaTwo_FinalNumber.Content   = update.Data.LalaTwoFinalNumber;
                 this.label_LalaThree_FinalNumber.Content = update.Data.LalaThreeFinalNumber;
+            }
+            else if (update.State == GameState.Finished)
+            {
+                this.button_StartTheGame.IsEnabled = true;
             }
 
             this.MakeTheLalasDoTheThing(update.Data.LalaOneAction, update.Data.LalaTwoAction, update.Data.LalaThreeAction);
@@ -59,6 +64,7 @@
 
         private void button_StartTheGame_Click(object sender, RoutedEventArgs e)
         {
+            this.button_StartTheGame.IsEnabled = false;
             TheGame.StartGame();
         }
 

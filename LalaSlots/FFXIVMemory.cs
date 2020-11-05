@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     class FFXIVMemory
@@ -15,6 +16,8 @@
 
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_KEYUP = 0x0101;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_SYSKEYUP = 0x0105;
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -70,14 +73,56 @@
             return playerName;
         }
 
+        private static void SendSyncKey(IntPtr ffxivWindow, Keys key)
+        {
+            bool modifier = false;
+
+            // This sleeps the thread intentionally. We are asking the game to take key inputs like a human, and want to insure everything is actually taken in.
+            Keys key2 = (key & ~Keys.Control) & (key & ~Keys.Shift) & (key & ~Keys.Alt);
+
+            if (key2 != key) modifier = true;
+
+            if (modifier)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    if ((key & Keys.Control) == Keys.Control) SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)Keys.ControlKey), ((IntPtr)0));
+                    if ((key & Keys.Alt) == Keys.Alt) SendMessage(ffxivWindow, WM_SYSKEYDOWN, ((IntPtr)Keys.Menu), ((IntPtr)0));
+                    if ((key & Keys.Shift) == Keys.Shift) SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)Keys.ShiftKey), ((IntPtr)0));
+
+                    Thread.Sleep(5);
+                }
+            }
+
+            SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)key2), ((IntPtr)0));
+            Thread.Sleep(50);
+            SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)key2), ((IntPtr)0));
+
+            if (modifier)
+            {
+                if ((key & Keys.Shift) == Keys.Shift)
+                {
+                    Thread.Sleep(5);
+                    SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)Keys.ShiftKey), ((IntPtr)0));
+                }
+                if ((key & Keys.Alt) == Keys.Alt)
+                {
+                    Thread.Sleep(5);
+                    SendMessage(ffxivWindow, WM_SYSKEYUP, ((IntPtr)Keys.Menu), ((IntPtr)0));
+                }
+                if ((key & Keys.Control) == Keys.Control)
+                {
+                    Thread.Sleep(5);
+                    SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)Keys.ControlKey), ((IntPtr)0));
+                }
+            }
+            Thread.Sleep(50);
+        }
+
         public static void PerformActionThroughKeybind(LalaSlot lala, Enums.KeybindAction action)
         {
-            (Keys k, Keys m) = Enums.GetKeyFromKeybindAction(action);
-
-            if (m != Keys.None) SendMessage(lala.Window, WM_KEYDOWN, (IntPtr)m, IntPtr.Zero);
-            if (k != Keys.None) SendMessage(lala.Window, WM_KEYDOWN, (IntPtr)k, IntPtr.Zero);
-            if (k != Keys.None) SendMessage(lala.Window, WM_KEYUP,   (IntPtr)k, IntPtr.Zero);
-            if (m != Keys.None) SendMessage(lala.Window, WM_KEYUP,   (IntPtr)m, IntPtr.Zero);
+            Keys k = Enums.GetKeyFromKeybindAction(action);
+            SendSyncKey(lala.Window, k);
         }
     }
 
@@ -92,7 +137,7 @@
 
         public void PerformAction(Enums.KeybindAction action)
         {
-            FFXIVMemory.PerformActionThroughKeybind(this, action);
+            Task.Run(() => FFXIVMemory.PerformActionThroughKeybind(this, action));
         }
     }
 }

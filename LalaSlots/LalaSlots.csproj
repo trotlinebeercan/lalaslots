@@ -82,6 +82,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="FFXIVMemory.cs" />
     <Compile Include="GameLogic.cs" />
+    <Compile Include="LootTable.cs" />
     <Compile Include="ProcessSelection.xaml.cs">
       <DependentUpon>ProcessSelection.xaml</DependentUpon>
     </Compile>

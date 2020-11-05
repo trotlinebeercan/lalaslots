@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace LalaSlots
     {
         public EventHandler<LalaUpdate> OnUpdate;
 
+        private LootTable Lewt;
         private BackgroundWorker Worker;
         private GameData Data;
         private GameState State;
@@ -18,10 +20,8 @@ namespace LalaSlots
         public void StartGame()
         {
             this.Data = new GameData();
-            this.Data.LalaOneFinalNumber   = (int)Math.Floor(RNG.Random(200000, 500000) / 100000.0);
-            this.Data.LalaTwoFinalNumber   = (int)Math.Floor(RNG.Random(200000, 500000) / 100000.0);
-            this.Data.LalaThreeFinalNumber = (int)Math.Floor(RNG.Random(200000, 500000) / 100000.0);
-
+            this.Lewt = new LootTable();
+            this.InitializeGameConditions();
             this.State = GameState.Initialized;
 
             this.Worker = new BackgroundWorker();
@@ -44,7 +44,7 @@ namespace LalaSlots
             this.Data.LalaTwoAction = lalaTwoAct;
             this.Data.LalaThreeAction = lalaThreeAct;
 
-            if (sleep) Thread.Sleep(1000);
+            if (sleep) Thread.Sleep(1500);
 
             this.OnUpdate?.Invoke(this, new LalaUpdate(this.Data, this.State));
         }
@@ -63,6 +63,8 @@ namespace LalaSlots
             (Enums.KeybindAction lalaTwoAct, Enums.KeybindAction lalaTwoFit) = FinalActionsFromFinalNumber(this.Data.LalaTwoFinalNumber);
             (Enums.KeybindAction lalaThreeAct, Enums.KeybindAction lalaThreeFit) = FinalActionsFromFinalNumber(this.Data.LalaThreeFinalNumber);
 
+            
+            this.Update(Enums.KeybindAction.EmoteSurp, true);
             this.Update(lalaOneFit, lalaTwoFit, lalaThreeFit, true);
             this.Update(lalaOneAct, lalaTwoAct, lalaThreeAct, true);
         }
@@ -89,6 +91,46 @@ namespace LalaSlots
                 // none of the numbers match. unlucky.
                 this.Update(Enums.KeybindAction.EmoteFume, true);
             }
+        }
+
+        private void InitializeGameConditions()
+        {
+            Loot chosenLoot = this.Lewt.NextRandomItem();
+
+            int final0 = 0, final1 = 0, final2 = 0;
+            switch (chosenLoot)
+            {
+                case Loot.Three:
+                    final0 = final1 = final2 = RNG.Random(2, 5);
+                    break;
+
+                case Loot.Two:
+                    final0 = final1 = final2 = RNG.Random(2, 5);
+                    while (final2 == final0) final2 = RNG.Random(2, 5);
+                    break;
+
+                case Loot.None:
+                    final0 = RNG.Random(2, 5);
+                    if (final0 == 2)
+                    {
+                        final1 = 3;
+                        final2 = 4;
+                    }
+                    else if (final0 == 3)
+                    {
+                        final1 = 4;
+                        final2 = 2;
+                    }
+                    else if (final0 == 4)
+                    {
+                        final1 = 3;
+                        final2 = 2;
+                    }
+                    break;
+            }
+            this.Data.LalaOneFinalNumber   = final0;
+            this.Data.LalaTwoFinalNumber   = final1;
+            this.Data.LalaThreeFinalNumber = final2;
         }
 
         private (Enums.KeybindAction, Enums.KeybindAction) FinalActionsFromFinalNumber(int number)
@@ -125,15 +167,22 @@ namespace LalaSlots
         private List<Animation> DanceAnimationActions { get; } =
             new List<Animation>()
             {
-                new Animation(Enums.KeybindAction.EmoteDance,   0.5),
-                new Animation(Enums.KeybindAction.EquipOutfit2, 0.0),
-                new Animation(Enums.KeybindAction.EquipOutfit3, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit4, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit2, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit3, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit4, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit2, 1.0),
-                new Animation(Enums.KeybindAction.EquipOutfit3, 1.0),
+                new Animation(Enums.KeybindAction.EmoteThink,   0.0),
+                new Animation(Enums.KeybindAction.EquipOutfit2, 0.25),
+                new Animation(Enums.KeybindAction.EquipOutfit3, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit4, 1.25),
+
+                new Animation(Enums.KeybindAction.EmoteDance,   0.25),
+                new Animation(Enums.KeybindAction.EquipOutfit2, 0.25),
+                new Animation(Enums.KeybindAction.EquipOutfit3, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit4, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit2, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit3, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit4, 1.25),
+                new Animation(Enums.KeybindAction.EquipOutfit1, 1.25),
+
+                new Animation(Enums.KeybindAction.EmotePray, 0.25),
+                new Animation(Enums.KeybindAction.EquipOutfit1, 2.5),
             };
     }
 
