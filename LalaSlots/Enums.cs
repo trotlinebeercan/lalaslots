@@ -31,6 +31,9 @@
             MacroSayRed   = 22,
             MacroSayGreen = 23,
             MacroSayBlue  = 24,
+
+            // experimental walking actions
+            WalkForward   = 25,
         }
 
         public static Keys GetKeyFromKeybindAction(KeybindAction action)
@@ -80,6 +83,9 @@
                     return Keys.OemMinus | Keys.Alt;
                 case KeybindAction.MacroSayBlue:
                     return Keys.Oemplus | Keys.Alt;
+
+                case KeybindAction.WalkForward:
+                    return Keys.W;
             }
 
             return Keys.None;

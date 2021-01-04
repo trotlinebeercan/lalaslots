@@ -12,15 +12,22 @@
         private LalaSlot LalaTwo;
         private LalaSlot LalaThree;
 
-        private GameLogic TheGame;
+        // this is such bad code. but, when i first wrote this, i two-way bound the members
+        // to the UI elements for debugging / manual action with the dropdown menu
+        // so, here we are
+        private int LalaOneKeybindWait;
+        private int LalaTwoKeybindWait;
+        private int LalaThreeKeybindWait;
+
+        private SlotMachine TheGame;
 
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
 
-            TheGame = new GameLogic();
-            TheGame.OnUpdate += delegate (object o, LalaUpdate update)
+            TheGame = new SlotMachine();
+            TheGame.OnUpdate += delegate (object o, object update)
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Send, new Action(() => { UpdateSystem(update); }));
             };
@@ -28,20 +35,36 @@
             FFXIVMemory.InitializeMemory();
         }
 
-        private void UpdateSystem(LalaUpdate update)
+        private void UpdateSystem(object update)
         {
-            if (update.State == GameState.Initialized)
-            {
-                this.label_LalaOne_FinalNumber.Content   = update.Data.LalaOneFinalNumber;
-                this.label_LalaTwo_FinalNumber.Content   = update.Data.LalaTwoFinalNumber;
-                this.label_LalaThree_FinalNumber.Content = update.Data.LalaThreeFinalNumber;
-            }
-            else if (update.State == GameState.Finished)
-            {
-                this.button_StartTheGame.IsEnabled = true;
-            }
+            if ((update as GameBase.GameUpdate) == null)
+                return;
 
-            this.MakeTheLalasDoTheThing(update.Data.LalaOneAction, update.Data.LalaTwoAction, update.Data.LalaThreeAction);
+            if ((update as GameBase.GameUpdate).Type == GameBase.GameType.SlotMachine)
+            {
+                LalaUpdate latest = (update as LalaUpdate);
+                SlotMachine.GameData data = (latest.Data as SlotMachine.GameData);
+                if (latest.State == GameBase.GameState.Initialized)
+                {
+                    this.label_LalaOne_FinalNumber.Content = data.LalaOneFinalNumber;
+                    this.label_LalaTwo_FinalNumber.Content = data.LalaTwoFinalNumber;
+                    this.label_LalaThree_FinalNumber.Content = data.LalaThreeFinalNumber;
+                }
+                else if (latest.State == GameBase.GameState.Finished)
+                {
+                    this.button_StartTheGame.IsEnabled = true;
+                }
+
+                this.UpdateLalaKeybindWaitValues(latest.KeybindWaitInMs, latest.KeybindWaitInMs, latest.KeybindWaitInMs);
+                this.MakeTheLalasDoTheThing(data.LalaOneAction, data.LalaTwoAction, data.LalaThreeAction);
+            }
+        }
+
+        private void UpdateLalaKeybindWaitValues(int lala1, int lala2, int lala3)
+        {
+            this.LalaOneKeybindWait = lala1;
+            this.LalaTwoKeybindWait = lala2;
+            this.LalaThreeKeybindWait = lala3;
         }
 
         private void MakeTheLalasDoTheThing(Enums.KeybindAction act1, Enums.KeybindAction act2, Enums.KeybindAction act3)
@@ -143,6 +166,7 @@
                 { Enums.KeybindAction.MacroSayRed,   "Say Red"    },
                 { Enums.KeybindAction.MacroSayGreen, "Say Blue"   },
                 { Enums.KeybindAction.MacroSayBlue,  "Say Green"  },
+                { Enums.KeybindAction.WalkForward,   "Fowards"    },
             };
 
         private Enums.KeybindAction lalaAllAction = Enums.KeybindAction.EquipOutfit1;
@@ -167,7 +191,7 @@
                 lalaOneAction = value;
                 if (this.LalaOne != null)
                 {
-                    this.LalaOne.PerformAction(lalaOneAction);
+                    this.LalaOne.PerformAction(lalaOneAction, this.LalaOneKeybindWait);
                 }
             }
         }
@@ -181,7 +205,7 @@
                 lalaTwoAction = value;
                 if (this.LalaTwo != null)
                 {
-                    this.LalaTwo.PerformAction(lalaTwoAction);
+                    this.LalaTwo.PerformAction(lalaTwoAction, this.LalaTwoKeybindWait);
                 }
             }
         }
@@ -195,7 +219,7 @@
                 lalaThreeAction = value;
                 if (this.LalaThree != null)
                 {
-                    this.LalaThree.PerformAction(lalaThreeAction);
+                    this.LalaThree.PerformAction(lalaThreeAction, this.LalaThreeKeybindWait);
                 }
             }
         }

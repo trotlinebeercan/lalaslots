@@ -81,7 +81,8 @@
     </ApplicationDefinition>
     <Compile Include="Enums.cs" />
     <Compile Include="FFXIVMemory.cs" />
-    <Compile Include="GameLogic.cs" />
+    <Compile Include="GameBase.cs" />
+    <Compile Include="SlotMachine.cs" />
     <Compile Include="LootTable.cs" />
     <Compile Include="ProcessSelection.xaml.cs">
       <DependentUpon>ProcessSelection.xaml</DependentUpon>
@@ -131,6 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Games\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

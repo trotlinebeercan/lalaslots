@@ -73,7 +73,7 @@
             return playerName;
         }
 
-        private static void SendSyncKey(IntPtr ffxivWindow, Keys key)
+        private static void SendSyncKey(IntPtr ffxivWindow, Keys key, int waitBetweenKeyUpInMs)
         {
             bool modifier = false;
 
@@ -95,7 +95,7 @@
             }
 
             SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)key2), ((IntPtr)0));
-            Thread.Sleep(50);
+            Thread.Sleep(waitBetweenKeyUpInMs);
             SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)key2), ((IntPtr)0));
 
             if (modifier)
@@ -119,10 +119,10 @@
             Thread.Sleep(50);
         }
 
-        public static void PerformActionThroughKeybind(LalaSlot lala, Enums.KeybindAction action)
+        public static void PerformActionThroughKeybind(LalaSlot lala, Enums.KeybindAction action, int kbWaitInMs)
         {
             Keys k = Enums.GetKeyFromKeybindAction(action);
-            SendSyncKey(lala.Window, k);
+            SendSyncKey(lala.Window, k, kbWaitInMs);
         }
     }
 
@@ -135,9 +135,9 @@
         public int Id { get { return Process.Id; } }
         public IntPtr Window { get { return Process.MainWindowHandle; } }
 
-        public void PerformAction(Enums.KeybindAction action)
+        public void PerformAction(Enums.KeybindAction action, int kbWaitInMs)
         {
-            Task.Run(() => FFXIVMemory.PerformActionThroughKeybind(this, action));
+            Task.Run(() => FFXIVMemory.PerformActionThroughKeybind(this, action, kbWaitInMs));
         }
     }
 }
