@@ -12,81 +12,140 @@ namespace LalaSlots
     {
         private LootTable Lewt;
         private GameData Data;
-        private GameBase.GameState State;
 
-        public class GameData
+        public SlotMachine()
+        {
+            this.Type = GameType.SlotMachine;
+        }
+
+        private class GameData
         {
             public int LalaOneFinalNumber;
-            public Enums.KeybindAction LalaOneAction;
             public int LalaTwoFinalNumber;
-            public Enums.KeybindAction LalaTwoAction;
             public int LalaThreeFinalNumber;
-            public Enums.KeybindAction LalaThreeAction;
         }
 
         public override void StartGame()
         {
-            this.Animations = this.TheGameAnimations;
+            base.SetAnimations(this.TheGameAnimations, this.TheGameAnimations, this.TheGameAnimations);
+            base.SetThreadEndHandlers(this.LalaOneAnimationsEnded, this.LalaTwoAnimationsEnded, this.LalaThreeAnimationsEnded);
+
             this.Data = new GameData();
             this.Lewt = new LootTable();
             this.InitializeGameConditions();
 
-            this.State = GameBase.GameState.Initialized;
-            Update(Enums.KeybindAction.EquipOutfit1);
+            this.State = GameState.Initialized;
+            UpdateAll(Enums.KeybindAction.EquipOutfit1);
 
-            this.Worker = new BackgroundWorker();
-            this.Worker.RunWorkerCompleted += GameThreadEnd;
-
-            this.State = GameBase.GameState.Running;
+            this.State = GameState.Running;
             base.StartGame();
         }
 
-        public override void Update(Enums.KeybindAction allAct, int kbWaitInMs = 50, bool sleep = false)
+        protected override void GameFinished()
         {
-            Update(allAct, allAct, allAct, kbWaitInMs, sleep);
+            this.State = GameState.Finished;
+            GameUpdate newUpdate = new GameUpdate();
+            newUpdate.Assign(this.Type, this.Data, this.State);
+            base.UpdateSystem(newUpdate);
         }
 
-        public override void Update(Enums.KeybindAction lalaOneAct, Enums.KeybindAction lalaTwoAct, Enums.KeybindAction lalaThreeAct, int kbWaitInMs = 50, bool sleep = false)
+        private void UpdateAll(Enums.KeybindAction act, int kbWaitInMs = 50)
         {
-            this.Data.LalaOneAction = lalaOneAct;
-            this.Data.LalaTwoAction = lalaTwoAct;
-            this.Data.LalaThreeAction = lalaThreeAct;
-
-            if (sleep) Thread.Sleep(1500);
-
-            this.OnUpdate?.Invoke(this, new LalaUpdate(this.Data, this.State, kbWaitInMs));
+            this.Update(TargetLala.First,  act, kbWaitInMs);
+            this.Update(TargetLala.Second, act, kbWaitInMs);
+            this.Update(TargetLala.Third,  act, kbWaitInMs);
         }
 
-        private void GameThreadEnd(object o, RunWorkerCompletedEventArgs e)
+        private void UpdateSleep(TargetLala target, Enums.KeybindAction act)
         {
-            (Enums.KeybindAction lalaOneAct, Enums.KeybindAction lalaOneFit) = FinalActionsFromFinalNumber(this.Data.LalaOneFinalNumber);
-            (Enums.KeybindAction lalaTwoAct, Enums.KeybindAction lalaTwoFit) = FinalActionsFromFinalNumber(this.Data.LalaTwoFinalNumber);
-            (Enums.KeybindAction lalaThreeAct, Enums.KeybindAction lalaThreeFit) = FinalActionsFromFinalNumber(this.Data.LalaThreeFinalNumber);
+            this.Update(target, act);
+            Thread.Sleep(1500);
+        }
 
-            this.Update(Enums.KeybindAction.EmoteSurp, 50, true);
-            this.Update(lalaOneFit, lalaTwoFit, lalaThreeFit, 50, true);
-            this.Update(lalaOneAct, lalaTwoAct, lalaThreeAct, 50, true);
+        public override void Update(TargetLala target, Enums.KeybindAction act, int kbWaitInMs = 50)
+        {
+            GameUpdate newUpdate = new GameUpdate();
+            newUpdate.Assign(this.Type, target, act, this.Data, this.State, kbWaitInMs);
+            base.UpdateSystem(newUpdate);
+        }
 
-            this.State = GameBase.GameState.Finished;
-            
+        public override void InitCalled(GameUpdate update, MainWindow game)
+        {
+            game.label_LalaOne_FinalNumber.Content = (update.Data as GameData).LalaOneFinalNumber;
+            game.label_LalaTwo_FinalNumber.Content = (update.Data as GameData).LalaTwoFinalNumber;
+            game.label_LalaThree_FinalNumber.Content = (update.Data as GameData).LalaThreeFinalNumber;
+        }
+
+        public override void RunCalled(GameUpdate update, MainWindow game)
+        {
+            if (update.Target == TargetLala.First)
+            {
+                game.LalaOneKeybindWait = update.KeybindWaitInMs;
+                game.cbox_LalaOne_SelectEmote.SelectedValue = update.Action;
+            }
+            else if (update.Target == TargetLala.Second)
+            {
+                game.LalaTwoKeybindWait = update.KeybindWaitInMs;
+                game.cbox_LalaTwo_SelectEmote.SelectedValue = update.Action;
+            }
+            else if (update.Target == TargetLala.Third)
+            {
+                game.LalaThreeKeybindWait = update.KeybindWaitInMs;
+                game.cbox_LalaThree_SelectEmote.SelectedValue = update.Action;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override void CloseCalled(GameUpdate update, MainWindow game)
+        {
+            game.button_StartTheGame.IsEnabled = true;
+        }
+
+        private void LalaAnimationsEnded(TargetLala target, Enums.KeybindAction act, Enums.KeybindAction fit)
+        {
+            this.UpdateSleep(target, Enums.KeybindAction.EmoteSurp);
+            this.UpdateSleep(target, fit);
+            this.UpdateSleep(target, act);
+
             if (this.Data.LalaOneFinalNumber == this.Data.LalaTwoFinalNumber &&
                 this.Data.LalaOneFinalNumber == this.Data.LalaThreeFinalNumber)
             {
                 // all three match!
-                this.Update(Enums.KeybindAction.EmoteCheer, 50, true);
+                this.UpdateSleep(target, Enums.KeybindAction.EmoteCheer);
             }
             else if (this.Data.LalaOneFinalNumber == this.Data.LalaTwoFinalNumber   ||
                      this.Data.LalaOneFinalNumber == this.Data.LalaThreeFinalNumber ||
                      this.Data.LalaTwoFinalNumber == this.Data.LalaThreeFinalNumber)
             {
                 // at least two match
-                this.Update(Enums.KeybindAction.EmoteThumbs, 50, true);
+                this.UpdateSleep(target, Enums.KeybindAction.EmoteThumbs);
             }
             else
             {
                 // none of the numbers match. unlucky.
-                this.Update(Enums.KeybindAction.EmoteFume, 50, true);
+                this.UpdateSleep(target, Enums.KeybindAction.EmoteFume);
             }
+        }
+
+        private void LalaOneAnimationsEnded(object o, RunWorkerCompletedEventArgs e)
+        {
+            (Enums.KeybindAction lalaOneAct, Enums.KeybindAction lalaOneFit) = FinalActionsFromFinalNumber(this.Data.LalaOneFinalNumber);
+            this.LalaAnimationsEnded(TargetLala.First, lalaOneAct, lalaOneFit);
+        }
+
+        private void LalaTwoAnimationsEnded(object o, RunWorkerCompletedEventArgs e)
+        {
+            (Enums.KeybindAction lalaTwoAct, Enums.KeybindAction lalaTwoFit) = FinalActionsFromFinalNumber(this.Data.LalaTwoFinalNumber);
+            this.LalaAnimationsEnded(TargetLala.Second, lalaTwoAct, lalaTwoFit);
+        }
+
+        private void LalaThreeAnimationsEnded(object o, RunWorkerCompletedEventArgs e)
+        {
+            (Enums.KeybindAction lalaThreeAct, Enums.KeybindAction lalaThreeFit) = FinalActionsFromFinalNumber(this.Data.LalaThreeFinalNumber);
+            this.LalaAnimationsEnded(TargetLala.Third, lalaThreeAct, lalaThreeFit);
         }
 
         private void InitializeGameConditions()
@@ -158,13 +217,5 @@ namespace LalaSlots
                 new GameBase.Animation(Enums.KeybindAction.EmotePray,    0.25, 50),
                 new GameBase.Animation(Enums.KeybindAction.EquipOutfit1, 2.5, 50),
             };
-    }
-
-    public class LalaUpdate : GameBase.GameUpdate
-    {
-        public LalaUpdate(SlotMachine.GameData data, GameBase.GameState state, int kbWaitInMs)
-        {
-            this.Assign(GameBase.GameType.SlotMachine, data, state, kbWaitInMs);
-        }
     }
 }

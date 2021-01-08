@@ -15,9 +15,9 @@
         // this is such bad code. but, when i first wrote this, i two-way bound the members
         // to the UI elements for debugging / manual action with the dropdown menu
         // so, here we are
-        private int LalaOneKeybindWait;
-        private int LalaTwoKeybindWait;
-        private int LalaThreeKeybindWait;
+        public int LalaOneKeybindWait;
+        public int LalaTwoKeybindWait;
+        public int LalaThreeKeybindWait;
 
         private SlotMachine TheGame;
 
@@ -27,57 +27,28 @@
             this.DataContext = this;
 
             TheGame = new SlotMachine();
-            TheGame.OnUpdate += delegate (object o, object update)
+            TheGame.OnUpdate += delegate (object o, GameUpdate update)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action(() => { UpdateSystem(update); }));
+                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action(() => { UpdateSystem(o, update); }));
             };
 
             FFXIVMemory.InitializeMemory();
         }
 
-        private void UpdateSystem(object update)
+        private void UpdateSystem(object parent, GameUpdate update)
         {
-            if ((update as GameBase.GameUpdate) == null)
-                return;
-
-            if ((update as GameBase.GameUpdate).Type == GameBase.GameType.SlotMachine)
+            GameBase gameBase = (parent as GameBase);
+            if (update.State == GameState.Initialized)
             {
-                LalaUpdate latest = (update as LalaUpdate);
-                SlotMachine.GameData data = (latest.Data as SlotMachine.GameData);
-                if (latest.State == GameBase.GameState.Initialized)
-                {
-                    this.label_LalaOne_FinalNumber.Content = data.LalaOneFinalNumber;
-                    this.label_LalaTwo_FinalNumber.Content = data.LalaTwoFinalNumber;
-                    this.label_LalaThree_FinalNumber.Content = data.LalaThreeFinalNumber;
-                }
-                else if (latest.State == GameBase.GameState.Finished)
-                {
-                    this.button_StartTheGame.IsEnabled = true;
-                }
-
-                this.UpdateLalaKeybindWaitValues(latest.KeybindWaitInMs, latest.KeybindWaitInMs, latest.KeybindWaitInMs);
-                this.MakeTheLalasDoTheThing(data.LalaOneAction, data.LalaTwoAction, data.LalaThreeAction);
+                gameBase.InitCalled(update, this);
             }
-        }
-
-        private void UpdateLalaKeybindWaitValues(int lala1, int lala2, int lala3)
-        {
-            this.LalaOneKeybindWait = lala1;
-            this.LalaTwoKeybindWait = lala2;
-            this.LalaThreeKeybindWait = lala3;
-        }
-
-        private void MakeTheLalasDoTheThing(Enums.KeybindAction act1, Enums.KeybindAction act2, Enums.KeybindAction act3)
-        {
-            if (act1 == act2 && act1 == act3)
+            else if (update.State == GameState.Running)
             {
-                this.cbox_LalaAll_SelectEmote.SelectedValue   = act1;
+                gameBase.RunCalled(update, this);
             }
-            else
+            else if (update.State == GameState.Finished)
             {
-                this.cbox_LalaOne_SelectEmote.SelectedValue   = act1;
-                this.cbox_LalaTwo_SelectEmote.SelectedValue   = act2;
-                this.cbox_LalaThree_SelectEmote.SelectedValue = act3;
+                gameBase.CloseCalled(update, this);
             }
         }
 

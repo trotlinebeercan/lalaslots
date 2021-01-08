@@ -8,49 +8,81 @@ using System.Threading.Tasks;
 
 namespace LalaSlots
 {
+    public enum GameType
+    {
+        SlotMachine = 0,
+        Nutcracker = 1,
+    }
+
+    public enum GameState
+    {
+        Initialized = 0,
+        Running = 1,
+        Finished = 2,
+    }
+
+    public enum TargetLala
+    {
+        First = 0,
+        Second = 1,
+        Third = 2,
+    }
+
+    public static class RNG
+    {
+        private static Random random;
+        public static int Random(int min, int max)
+        {
+            if (random == null) random = new Random();
+            return random.Next(min, max);
+        }
+    }
+
+    public class GameUpdate
+    {
+        public void Assign(GameType type, object data, GameState state)
+        {
+            this.Type = type;
+            this.Data = data;
+            this.State = state;
+        }
+
+        public void Assign(GameType type, TargetLala target, Enums.KeybindAction act, object data, GameState state, int kbWaitInMs)
+        {
+            this.Type = type;
+            this.Target = target;
+            this.Action = act;
+            this.Data = data;
+            this.State = state;
+            this.KeybindWaitInMs = kbWaitInMs;
+        }
+
+        public GameType Type { private set; get; }
+        public TargetLala Target { private set; get; }
+        public Enums.KeybindAction Action { private set; get; }
+        public object Data { private set; get; }
+        public GameState State { private set; get; }
+        public int KeybindWaitInMs { private set; get; }
+    }
+
     public abstract class GameBase
     {
-        public enum GameType
-        {
-            SlotMachine = 0,
-            Nutcracker  = 1,
-        }
+        public EventHandler<GameUpdate> OnUpdate;
 
-        public enum GameState
-        {
-            Initialized = 0,
-            Running = 1,
-            Finished = 2,
-        }
+        protected GameType Type;
+        protected GameState State;
 
-        public static class RNG
-        {
-            private static Random random;
-            public static int Random(int min, int max)
-            {
-                if (random == null) random = new Random();
-                return random.Next(min, max);
-            }
-        }
+        private FullLalaDataObject LalaOne   = new FullLalaDataObject(TargetLala.First);
+        private FullLalaDataObject LalaTwo   = new FullLalaDataObject(TargetLala.Second);
+        private FullLalaDataObject LalaThree = new FullLalaDataObject(TargetLala.Third);
 
-        public class GameUpdate
-        {
-            public GameUpdate() {}
+        abstract public void Update(TargetLala target, Enums.KeybindAction action, int kbWaitInMs);
 
-            public void Assign(GameBase.GameType type, object data, GameBase.GameState state, int kbWaitInMs)
-            {
-                this.Data = data;
-                this.State = state;
-                this.KeybindWaitInMs = kbWaitInMs;
-            }
+        abstract public void InitCalled(GameUpdate update, MainWindow game);
+        abstract public void RunCalled(GameUpdate update, MainWindow game);
+        abstract public void CloseCalled(GameUpdate update, MainWindow game);
 
-            public GameBase.GameType Type { private set; get; }
-            public object Data { private set; get; }
-            public GameBase.GameState State { private set; get; }
-            public int KeybindWaitInMs { private set; get; }
-        }
-
-        public class Animation
+        protected class Animation
         {
             public Enums.KeybindAction Action;
             public double AnimationWaitInSeconds;
@@ -64,31 +96,65 @@ namespace LalaSlots
             }
         }
 
-        public List<GameBase.Animation> Animations { get; set; }
+        private class FullLalaDataObject
+        {
+            public FullLalaDataObject(TargetLala target)
+            {
+                this.Target = target;
+                this.Worker = new BackgroundWorker();
+            }
 
-        public BackgroundWorker Worker;
-        public EventHandler<object> OnUpdate;
+            public List<GameBase.Animation> Animations { get; set; }
+            public BackgroundWorker Worker;
+            public TargetLala Target;
+        }
 
         virtual public void StartGame()
         {
-            if (this.Worker == null)
-                this.Worker = new BackgroundWorker();
+            this.LalaOne.Worker.DoWork   += delegate { ProcessEvents(this.LalaOne);   };
+            this.LalaTwo.Worker.DoWork   += delegate { ProcessEvents(this.LalaTwo);   };
+            this.LalaThree.Worker.DoWork += delegate { ProcessEvents(this.LalaThree); };
 
-            this.Worker.DoWork += GameThreadStart;
-            this.Worker.RunWorkerAsync();
+            BackgroundWorker thisWorker = new BackgroundWorker();
+            thisWorker.DoWork += delegate
+            {
+                this.LalaOne.Worker.RunWorkerAsync();
+                this.LalaTwo.Worker.RunWorkerAsync();
+                this.LalaThree.Worker.RunWorkerAsync();
+            };
+            thisWorker.RunWorkerAsync();
         }
 
-        private void GameThreadStart(object o, DoWorkEventArgs e)
+        abstract protected void GameFinished();
+
+        protected void UpdateSystem(GameUpdate update)
         {
-            foreach (var anim in this.Animations)
+            this.OnUpdate?.Invoke(this, update);
+        }
+
+        protected void SetAnimations(List<Animation> one, List<Animation> two, List<Animation> three)
+        {
+            this.LalaOne.Animations   = one;
+            this.LalaTwo.Animations   = two;
+            this.LalaThree.Animations = three;
+        }
+
+        protected void SetThreadEndHandlers(RunWorkerCompletedEventHandler one, RunWorkerCompletedEventHandler two, RunWorkerCompletedEventHandler three)
+        {
+            this.LalaOne.Worker.RunWorkerCompleted   += one;
+            this.LalaTwo.Worker.RunWorkerCompleted   += two;
+            this.LalaThree.Worker.RunWorkerCompleted += three;
+            GameFinished();
+        }
+
+        private void ProcessEvents(FullLalaDataObject lala)
+        {
+            foreach (var anim in lala.Animations)
             {
                 double deltaTimestampInS = anim.AnimationWaitInSeconds;
                 Thread.Sleep((int)(deltaTimestampInS * 1000));
-                this.Update(anim.Action, anim.KeybindWaitInMillisecs);
+                this.Update(lala.Target, anim.Action, anim.KeybindWaitInMillisecs);
             }
         }
-
-        abstract public void Update(Enums.KeybindAction action, int kbWaitInMs = 50, bool sleep = false);
-        abstract public void Update(Enums.KeybindAction lalaOneAct, Enums.KeybindAction lalaTwoAct, Enums.KeybindAction lalaThreeAct, int kbWaitInMs = 50, bool sleep = false);
     }
 }
