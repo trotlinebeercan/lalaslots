@@ -3,11 +3,18 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Timers;
     using System.Windows;
     using System.Windows.Threading;
 
     public partial class MainWindow : Window
     {
+        private GameBase TheGame;
+
+        // timers for the clock in the top-left window
+        Timer RunTimer;
+        TimeSpan Time;
+
         private LalaSlot LalaOne;
         private LalaSlot LalaTwo;
         private LalaSlot LalaThree;
@@ -19,14 +26,22 @@
         public int LalaTwoKeybindWait;
         public int LalaThreeKeybindWait;
 
-        private SlotMachine TheGame;
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // Internals
+        ///////////////////////////////////////////////////////////////////////////////////////////
 
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
 
-            TheGame = new SlotMachine();
+            this.Time = new TimeSpan(0);
+            this.RunTimer = new Timer();
+            this.RunTimer.Interval = 500;
+            this.RunTimer.Elapsed += DispatcherTimer_Tick;
+
+            // TODO: Drop-down menu to select game
+            TheGame = new Nutcracker();
             TheGame.OnUpdate += delegate (object o, GameUpdate update)
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Send, new Action(() => { UpdateSystem(o, update); }));
@@ -34,6 +49,19 @@
 
             FFXIVMemory.InitializeMemory();
         }
+
+        void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            this.Time += new TimeSpan(0, 0, 0, 0, 500);
+            this.Dispatcher.Invoke(() =>
+            {
+                label_Timer.Content = string.Format("{0:00}:{1:00}:{2:00}", this.Time.Minutes, this.Time.Seconds, this.Time.Milliseconds / 10);
+            });
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // System Components
+        ///////////////////////////////////////////////////////////////////////////////////////////
 
         private void UpdateSystem(object parent, GameUpdate update)
         {
@@ -49,6 +77,9 @@
             else if (update.State == GameState.Finished)
             {
                 gameBase.CloseCalled(update, this);
+
+                this.RunTimer.Stop();
+                this.Time = new TimeSpan(0);
             }
         }
 
@@ -58,6 +89,8 @@
 
         private void button_StartTheGame_Click(object sender, RoutedEventArgs e)
         {
+            this.RunTimer.Start();
+
             this.button_StartTheGame.IsEnabled = false;
             TheGame.StartGame();
         }

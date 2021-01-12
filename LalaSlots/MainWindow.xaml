@@ -18,6 +18,7 @@
             <ColumnDefinition Width="100*" />
             <ColumnDefinition Width="100*" />
         </Grid.ColumnDefinitions>
+        <Label x:Name="label_Timer" Content="00:00:00" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Grid.Column="0"/>
         <Button x:Name="button_LalaOne_Select" Content="Select Process" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Click="button_LalaOne_Select_Click" Padding="3,1" Grid.Column="1"/>
         <Label x:Name="label_LalaOne_Name" Content="Lala One" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Label x:Name="label_LalaTwo_Name" Content="Lala Two" Grid.Column="2" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="1" VerticalAlignment="Top"/>
