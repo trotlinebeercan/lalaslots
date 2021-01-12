@@ -144,7 +144,11 @@ namespace LalaSlots
             this.LalaOne.Worker.RunWorkerCompleted   += one;
             this.LalaTwo.Worker.RunWorkerCompleted   += two;
             this.LalaThree.Worker.RunWorkerCompleted += three;
-            GameFinished();
+
+            //this.LalaThree.Worker.RunWorkerCompleted += delegate (object o, RunWorkerCompletedEventArgs e)
+            //{
+            //    GameFinished();
+            //};
         }
 
         private void ProcessEvents(FullLalaDataObject lala)
