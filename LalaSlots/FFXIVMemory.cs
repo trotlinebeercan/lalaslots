@@ -119,10 +119,34 @@
             Thread.Sleep(50);
         }
 
+        private static void SendTwoKeysSync(IntPtr ffxivWindow, Keys key1, Keys key2, int waitBetweenKeyUpInMs)
+        {
+            // no modifiers are allowed here
+
+            SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)key1), ((IntPtr)0));
+            SendMessage(ffxivWindow, WM_KEYDOWN, ((IntPtr)key2), ((IntPtr)0));
+            Thread.Sleep(waitBetweenKeyUpInMs);
+            SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)key1), ((IntPtr)0));
+            SendMessage(ffxivWindow, WM_KEYUP, ((IntPtr)key2), ((IntPtr)0));
+
+            Thread.Sleep(50);
+        }
+
         public static void PerformActionThroughKeybind(LalaSlot lala, Enums.KeybindAction action, int kbWaitInMs)
         {
-            Keys k = Enums.GetKeyFromKeybindAction(action);
-            SendSyncKey(lala.Window, k, kbWaitInMs);
+            if (action == Enums.KeybindAction.DiagLeft)
+            {
+                SendTwoKeysSync(lala.Window, Keys.W, Keys.Q, kbWaitInMs);
+            }
+            else if (action == Enums.KeybindAction.DiagRight)
+            {
+                SendTwoKeysSync(lala.Window, Keys.W, Keys.E, kbWaitInMs);
+            }
+            else
+            {
+                Keys k = Enums.GetKeyFromKeybindAction(action);
+                SendSyncKey(lala.Window, k, kbWaitInMs);
+            }
         }
     }
 

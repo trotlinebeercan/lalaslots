@@ -34,6 +34,14 @@
 
             // experimental walking actions
             WalkForward   = 25,
+            WalkBackward  = 26,
+            ToggleRun     = 27,
+            StrafeLeft    = 28,
+            StrafeRight   = 29,
+
+            // special cases
+            DiagLeft      = 100,
+            DiagRight     = 101,
         }
 
         public static Keys GetKeyFromKeybindAction(KeybindAction action)
@@ -86,6 +94,21 @@
 
                 case KeybindAction.WalkForward:
                     return Keys.W;
+                case KeybindAction.WalkBackward:
+                    return Keys.S;
+                case KeybindAction.StrafeLeft:
+                    return Keys.Q;
+                case KeybindAction.StrafeRight:
+                    return Keys.E;
+
+                case KeybindAction.ToggleRun:
+                    return Keys.Oemtilde;
+
+                // these two are handled differently, since they are combinations
+                case KeybindAction.DiagLeft:
+                    return Keys.None;
+                case KeybindAction.DiagRight:
+                    return Keys.None;
             }
 
             return Keys.None;
