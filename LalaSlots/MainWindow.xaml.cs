@@ -55,7 +55,11 @@
             this.Time += new TimeSpan(0, 0, 0, 0, 500);
             this.Dispatcher.Invoke(() =>
             {
-                label_Timer.Content = string.Format("{0:00}:{1:00}:{2:00}", this.Time.Minutes, this.Time.Seconds, this.Time.Milliseconds / 10);
+                label_Timer.Content = string.Format(
+                    "{0:00}:{1:00}:{2:00}\n{3:00}:{4:00}",
+                    this.Time.Minutes, this.Time.Seconds, this.Time.Milliseconds / 10,
+                    this.Time.Minutes * 60 + this.Time.Seconds, this.Time.Milliseconds / 10
+                );
             });
         }
 
