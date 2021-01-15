@@ -1,5 +1,6 @@
 ﻿namespace LalaSlots
 {
+    using System;
     using System.Windows.Forms;
 
     public class Enums
@@ -7,41 +8,52 @@
         public enum KeybindAction
         {
             // expects shift
-            EquipOutfit1  = 1,
-            EquipOutfit2  = 2,
-            EquipOutfit3  = 3,
-            EquipOutfit4  = 4,
-            EmoteCheer    = 5,
-            EmoteSurp     = 6,
-            EmoteThumbs   = 7,
-            EmoteNo       = 8,
-            EmoteFume     = 9,
-            EmoteFPalm    = 10,
-            EmoteFlex     = 11,
-            EmoteAirQ     = 12,
+            EquipOutfit1,
+            EquipOutfit2,
+            EquipOutfit3,
+            EquipOutfit4,
+            EmoteCheer,
+            EmoteSurp,
+            EmoteThumbs,
+            EmoteNo,
+            EmoteFume,
+            EmoteFPalm,
+            EmoteFlex,
+            EmoteAirQ,
 
             // expects alt
-            EmoteDance    = 13,
-            EmoteSit      = 14,
-            EmotePray     = 15,
-            EmoteBeckon   = 16,
-            EmoteThink    = 17,
-            EmoteDoze     = 18,
+            EmoteDance,
+            EmoteSit,
+            EmotePray,
+            EmoteBeckon,
+            EmoteThink,
+            EmoteDoze,
+            EmoteBow,
+            EmotePose,
+            EmoteWelcome,
+            MacroSayRed,
+            MacroSayGreen,
+            MacroSayBlue,
 
-            MacroSayRed   = 22,
-            MacroSayGreen = 23,
-            MacroSayBlue  = 24,
+            // expects ctrl+shift
+            EmoteStepDnc,
+            EmoteHarvDnc,
+            EmoteBallDnc,
+            EmoteBlowKiss,
+            EmoteCongrats,
+            EmoteWave,
+            EmoteLookout,
 
             // experimental walking actions
-            WalkForward   = 25,
-            WalkBackward  = 26,
-            ToggleRun     = 27,
-            StrafeLeft    = 28,
-            StrafeRight   = 29,
+            WalkForward,
+            WalkBackward,
+            ToggleRun,
+            StrafeLeft,
+            StrafeRight,
 
             // special cases
-            DiagLeft      = 100,
-            DiagRight     = 101,
+            DiagLeft,
+            DiagRight,
         }
 
         public static Keys GetKeyFromKeybindAction(KeybindAction action)
@@ -72,6 +84,7 @@
                     return Keys.OemMinus | Keys.Shift;
                 case KeybindAction.EmoteAirQ:
                     return Keys.Oemplus | Keys.Shift;
+
                 case KeybindAction.EmoteDance:
                     return Keys.D1 | Keys.Alt;
                 case KeybindAction.EmoteSit:
@@ -84,13 +97,33 @@
                     return Keys.D5 | Keys.Alt;
                 case KeybindAction.EmoteDoze:
                     return Keys.D6 | Keys.Alt;
-
+                case KeybindAction.EmoteBow:
+                    return Keys.D7 | Keys.Alt;
+                case KeybindAction.EmotePose:
+                    return Keys.D8 | Keys.Alt;
+                case KeybindAction.EmoteWelcome:
+                    return Keys.D9 | Keys.Alt;
                 case KeybindAction.MacroSayRed:
                     return Keys.D0 | Keys.Alt;
                 case KeybindAction.MacroSayGreen:
                     return Keys.OemMinus | Keys.Alt;
                 case KeybindAction.MacroSayBlue:
                     return Keys.Oemplus | Keys.Alt;
+
+                case KeybindAction.EmoteStepDnc:
+                    return Keys.D1 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteHarvDnc:
+                    return Keys.D2 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteBallDnc:
+                    return Keys.D3 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteBlowKiss:
+                    return Keys.D4 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteCongrats:
+                    return Keys.D5 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteWave:
+                    return Keys.D6 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteLookout:
+                    return Keys.D7 | Keys.Control | Keys.Shift;
 
                 case KeybindAction.WalkForward:
                     return Keys.W;
@@ -109,9 +142,10 @@
                     return Keys.None;
                 case KeybindAction.DiagRight:
                     return Keys.None;
-            }
 
-            return Keys.None;
+                default:
+                    throw new Exception("Internal error - missing case");
+            }
         }
     }
 }
