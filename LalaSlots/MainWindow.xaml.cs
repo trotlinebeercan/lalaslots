@@ -184,6 +184,8 @@
                 { Enums.KeybindAction.EmoteCongrats, "Congrats"    },
                 { Enums.KeybindAction.EmoteWave,     "Wave"        },
                 { Enums.KeybindAction.EmoteLookout,  "Lookout"     },
+                { Enums.KeybindAction.EmoteHappy,    "Happy"       },
+                { Enums.KeybindAction.EmotePanic,    "Panic"       },
                 { Enums.KeybindAction.WalkForward,   "Fowards"     },
                 { Enums.KeybindAction.WalkBackward,  "Backwards"   },
                 { Enums.KeybindAction.ToggleRun,     "ToggleRun"   },

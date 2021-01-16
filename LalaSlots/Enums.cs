@@ -43,6 +43,8 @@
             EmoteCongrats,
             EmoteWave,
             EmoteLookout,
+            EmoteHappy,
+            EmotePanic,
 
             // experimental walking actions
             WalkForward,
@@ -124,6 +126,10 @@
                     return Keys.D6 | Keys.Control | Keys.Shift;
                 case KeybindAction.EmoteLookout:
                     return Keys.D7 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmoteHappy:
+                    return Keys.D8 | Keys.Control | Keys.Shift;
+                case KeybindAction.EmotePanic:
+                    return Keys.D9 | Keys.Control | Keys.Shift;
 
                 case KeybindAction.WalkForward:
                     return Keys.W;
