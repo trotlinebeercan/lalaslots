@@ -135,118 +135,175 @@ namespace LalaSlots
             totals: 155s
         */
 
+        /*
+            /beckon 
+            /dance <wait.2>
+            /pose <wait.5>
+            /surprised <wait.3>
+            /cheer <wait.1>
+            /bdance <wait.2>
+            /dance <wait.10>
+            /surprised <wait.3>
+            /cheer <wait.1>
+            /dance <wait.2>
+            /surprised <wait.3>
+            /cheer <wait.1>
+        <wait.2>
+        */
+
         const double StartOfAnimationInS = 45.0;
 
-        private List<GameBase.Animation> LalaOneAnimations { get; } =
-            new List<GameBase.Animation>()
-            {
-                // walk up, mad flexin'
-                new GameBase.Animation(Enums.KeybindAction.DiagLeft, StartOfAnimationInS, 1500),
+private List<GameBase.Animation> LalaOneAnimations { get; } =
+    new List<GameBase.Animation>()
+    {
+        // walk up, mad flexin'
+        new GameBase.Animation(Enums.KeybindAction.DiagLeft, StartOfAnimationInS, 1500),
 
-                // beginning, 15s of free time
-                new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
+        // beginning, 15s of free time
+        new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
 
-                // this has to start at 60
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 5.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                // 96s total
+        // this has to start at 60
+        new GameBase.Animation(Enums.KeybindAction.EmoteBeckon, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBallDnc, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 10.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 8.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        // 98s total
 
-                // here be the chaos
-                // this has to start at 100
-                new GameBase.Animation(Enums.KeybindAction.ToggleRun,     4.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.WalkBackward,  2.0, 400),
-                new GameBase.Animation(Enums.KeybindAction.StrafeRight,   2.0, 800),
-                new GameBase.Animation(Enums.KeybindAction.EmoteLookout,  1.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteSurp,     5.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteCongrats, 3.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.StrafeLeft,    5.0, 400),
-                new GameBase.Animation(Enums.KeybindAction.EmoteHarvDnc,  1.5, 50),
-                new GameBase.Animation(Enums.KeybindAction.StrafeLeft,   11.0, 400),
-                new GameBase.Animation(Enums.KeybindAction.EmoteBlowKiss, 2.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.WalkForward,   5.0, 250),
-                new GameBase.Animation(Enums.KeybindAction.ToggleRun,     2.0, 50),
-                // </chaos>
-                // 140s total
+        // here be the chaos
+        // this has to start at 100
+        new GameBase.Animation(Enums.KeybindAction.ToggleRun,     2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.WalkBackward,  2.0, 400),
+        new GameBase.Animation(Enums.KeybindAction.StrafeRight,   2.0, 800),
+        new GameBase.Animation(Enums.KeybindAction.EmoteLookout,  1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp,     5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCongrats, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.StrafeLeft,    5.0, 400),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.StrafeLeft,    1.0, 250),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBlowKiss, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.WalkForward,   5.0, 250),
+        new GameBase.Animation(Enums.KeybindAction.ToggleRun,     1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePanic,    1.0, 50),
+        // </chaos>
+        // 140s total
 
-                // this has to start at 145
-                new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 5.5, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
-            };
+        // this has to start at 145
+        new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
+    };
 
-        private List<GameBase.Animation> LalaTwoAnimations { get; } =
-            new List<GameBase.Animation>()
-            {
-                // walk up, mad flexin'
-                new GameBase.Animation(Enums.KeybindAction.WalkForward, StartOfAnimationInS, 1200),
+private List<GameBase.Animation> LalaTwoAnimations { get; } =
+    new List<GameBase.Animation>()
+    {
+        // walk up, mad flexin'
+        new GameBase.Animation(Enums.KeybindAction.WalkForward, StartOfAnimationInS, 1200),
 
-                // beginning, 15s of free time
-                new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
+        // beginning, 15s of free time
+        new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
 
-                // this has to start at 60
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 5.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                // 96s total
+        // this has to start at 60
+        new GameBase.Animation(Enums.KeybindAction.EmoteBeckon, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBallDnc, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 10.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 8.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 2.0, 50),
+        // 98s total
 
-                // should this lala also chaos?
-                // this has to start at 100
-                new GameBase.Animation(Enums.KeybindAction.EmoteHarvDnc, 5.0, 50),
-                // </chaos>?
-                // 104s total
+        // should this lala also chaos?
+        // this has to start at 100
+        new GameBase.Animation(Enums.KeybindAction.EmoteHarvDnc,  2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,   19.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHarvDnc,  2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePanic,    8.0, 50),
+        // </chaos>?
+        // 133s total
 
-                // this has to start at 145
-                new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 44.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
-            };
+        // this has to start at 145
+        new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
+    };
 
-        private List<GameBase.Animation> LalaThreeAnimations { get; } =
-            new List<GameBase.Animation>()
-            {
-                // walk up, mad flexin'
-                new GameBase.Animation(Enums.KeybindAction.DiagRight, StartOfAnimationInS, 1500),
+private List<GameBase.Animation> LalaThreeAnimations { get; } =
+    new List<GameBase.Animation>()
+    {
+        // walk up, mad flexin'
+        new GameBase.Animation(Enums.KeybindAction.DiagRight, StartOfAnimationInS, 1500),
 
-                // beginning, 15s of free time
-                new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
+        // beginning, 15s of free time
+        new GameBase.Animation(Enums.KeybindAction.EmoteWave, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteWelcome, 5.0, 50),
 
-                // this has to start at 60
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 5.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteDance, 9.0, 50),
-                // 96s total
+        // this has to start at 60
+        new GameBase.Animation(Enums.KeybindAction.EmoteBeckon, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePose, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBallDnc, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 10.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteDance, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp, 8.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCheer, 1.0, 50),
+        // 98s total
 
-                // here be the chaos
-                // this has to start at 100
-                new GameBase.Animation(Enums.KeybindAction.ToggleRun,     4.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.WalkBackward,  2.0, 800),
-                new GameBase.Animation(Enums.KeybindAction.StrafeLeft,    2.0, 800),
-                new GameBase.Animation(Enums.KeybindAction.EmoteLookout,  1.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteSurp,     5.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteCongrats, 3.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.StrafeRight,   5.0, 400),
-                new GameBase.Animation(Enums.KeybindAction.EmoteHarvDnc,  1.5, 50),
-                new GameBase.Animation(Enums.KeybindAction.StrafeRight,  11.0, 400),
-                new GameBase.Animation(Enums.KeybindAction.EmoteBlowKiss, 2.0, 50),
-                new GameBase.Animation(Enums.KeybindAction.WalkForward,   5.0, 450),
-                new GameBase.Animation(Enums.KeybindAction.ToggleRun,     2.0, 50),
-                // </chaos>
-                // 140s total
+        // here be the chaos
+        // this has to start at 100
+        new GameBase.Animation(Enums.KeybindAction.ToggleRun,     2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.WalkBackward,  2.0, 800),
+        new GameBase.Animation(Enums.KeybindAction.StrafeLeft,    2.0, 800),
+        new GameBase.Animation(Enums.KeybindAction.EmoteLookout,  1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteSurp,     5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteCongrats, 3.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.StrafeRight,   5.0, 400),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteHappy,    2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.StrafeRight,   1.0, 250),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBlowKiss, 2.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.WalkForward,   5.0, 450),
+        new GameBase.Animation(Enums.KeybindAction.ToggleRun,     1.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmotePanic,    1.0, 50),
+        // </chaos>
+        // 140s total
 
-                // this has to start at 145
-                new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 5.5, 50),
-                new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
-            };
-    }
+        // this has to start at 145
+        new GameBase.Animation(Enums.KeybindAction.EmoteStepDnc, 5.0, 50),
+        new GameBase.Animation(Enums.KeybindAction.EmoteBow, 10.0, 50),
+    };
+}
 }
